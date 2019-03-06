@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.lang.reflect.Array;
 
 
 class VentanaPrincipal extends JFrame {
@@ -7,6 +8,8 @@ class VentanaPrincipal extends JFrame {
 	JTextArea txtAAreaSi, txtAAreaNo;
 	JButton btnAnalizar;
 	JProgressBar barraProgreso;
+	
+	String[] datosAleatorios=new String[10000000]; 
 	
 	public VentanaPrincipal() {
 		getContentPane().setLayout(null);
@@ -44,7 +47,15 @@ class VentanaPrincipal extends JFrame {
 			btnAnalizar.setBounds(260, 450, 150, 40);
 			btnAnalizar.setFont(new Font("Time New Romans", 0, 20));
 		add(btnAnalizar);
-		
+	}
+	
+	public void generarDatosAleatorios(){
+		for(int i=0;i<datosAleatorios.length;i++){
+			if(Math.random()>0.5)
+				datosAleatorios[i]="Si";
+			else
+				datosAleatorios[i]="No";
+		}
 	}
 }
 
@@ -72,5 +83,13 @@ public class Prueba {
 				new VentanaPrincipal();
 			}
 		});
+		
+		VentanaPrincipal ventana=new VentanaPrincipal();
+		
+		ventana.generarDatosAleatorios();
+		
+		for(int i=0;i<ventana.datosAleatorios.length;i++){
+			System.out.println((i+1)+"  "+ventana.datosAleatorios[i]);
+		}
 	}
 }
