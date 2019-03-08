@@ -4,18 +4,69 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Array;
 
+class GeneraradorAleatorio {
+	
+	String[] datosAleatorios=new String[100];
+	protected int contSi=0, contNo=0;
+	
+	public String[] generar(){		
+		for(int i=0;i<datosAleatorios.length;i++){
+			if(Math.random()>0.5){
+				datosAleatorios[i]="Si";
+				contSi++;
+			}
+			else{
+				datosAleatorios[i]="No";
+				contNo++;
+			}
+		}
+		return datosAleatorios;
+	}
+}
+
+class HiloSepararDatos implements Runnable {
+	
+	GeneraradorAleatorio generador=new GeneraradorAleatorio();
+	
+	final String[] datosAleatorios=generador.generar();
+	final int totalSi=generador.contSi;
+	final int totalNo=generador.contNo;
+	
+	@Override
+	public void run() {
+		VentanaPrincipal.txtAAreaSi.setText("");
+		VentanaPrincipal.txtAAreaNo.setText("");
+		int contSi=0, contNo=0;
+		
+		for(int i=0; i<datosAleatorios.length; i++) {
+			if(datosAleatorios[i].equals("Si")) {
+				if(contSi<totalSi-1)
+					VentanaPrincipal.txtAAreaSi.append((contSi+1)+".-	"+datosAleatorios[i]+"\n");
+				else
+					VentanaPrincipal.txtAAreaSi.append((contSi+1)+".-	"+datosAleatorios[i]);
+				contSi++;
+			}
+			else if(datosAleatorios[i].equals("No")) {
+				if(contNo<totalNo-1)
+					VentanaPrincipal.txtAAreaNo.append((contNo+1)+".-	"+datosAleatorios[i]+"\n");
+				else
+					VentanaPrincipal.txtAAreaNo.append((contNo+1)+".-	"+datosAleatorios[i]);
+				contNo++;
+			}
+		}
+	}
+}
+
+
+
 
 class VentanaPrincipal extends JFrame implements ActionListener{
 	
-	JTextArea txtAAreaSi, txtAAreaNo;
+	static JTextArea txtAAreaSi, txtAAreaNo;
 	JButton btnAnalizar, btnLimpiar;
 	JProgressBar barraProgreso;
 	
-	String[] datosAleatorios=new String[10000000]; 
-	
 	public VentanaPrincipal() {
-		
-		generarDatosAleatorios();
 		
 		getContentPane().setLayout(null);
 		setTitle("Analisis de Datos");
@@ -64,14 +115,7 @@ class VentanaPrincipal extends JFrame implements ActionListener{
 		add(btnLimpiar);
 	}
 	
-	public void generarDatosAleatorios(){
-		for(int i=0;i<datosAleatorios.length;i++){
-			if(Math.random()>0.5)
-				datosAleatorios[i]="Si";
-			else
-				datosAleatorios[i]="No";
-		}
-	}
+	
 	
 	public void limpiar(){
 		txtAAreaSi.setText("");
@@ -81,6 +125,8 @@ class VentanaPrincipal extends JFrame implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource()==btnAnalizar){
+			Thread hiloSeparar = new Thread(new HiloSepararDatos());
+			hiloSeparar.start();
 			
 		}
 		if(e.getSource()==btnLimpiar){
@@ -89,7 +135,12 @@ class VentanaPrincipal extends JFrame implements ActionListener{
 	}
 }
 
-
+class Hilo1 implements Runnable {
+	@Override
+	public void run() {
+		//if(datos[i].eq)
+	}
+}
 
 public class Prueba {
 
