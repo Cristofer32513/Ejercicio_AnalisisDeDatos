@@ -1,17 +1,22 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.lang.reflect.Array;
 
 
-class VentanaPrincipal extends JFrame {
+class VentanaPrincipal extends JFrame implements ActionListener{
 	
 	JTextArea txtAAreaSi, txtAAreaNo;
-	JButton btnAnalizar;
+	JButton btnAnalizar, btnLimpiar;
 	JProgressBar barraProgreso;
 	
 	String[] datosAleatorios=new String[10000000]; 
 	
 	public VentanaPrincipal() {
+		
+		generarDatosAleatorios();
+		
 		getContentPane().setLayout(null);
 		setTitle("Analisis de Datos");
 		setSize(680, 600);
@@ -22,31 +27,41 @@ class VentanaPrincipal extends JFrame {
 		
 		
 		txtAAreaSi=new JTextArea();
-			txtAAreaSi.setFont(new Font("Times New Roman", 5, 16));
+			txtAAreaSi.setFont(new Font("Times New Roman", 0, 16));
 			txtAAreaSi.setBackground(new Color(230, 230, 230));
 			txtAAreaSi.setEditable(false);
 			txtAAreaSi.setLineWrap(true);
 			txtAAreaSi.setWrapStyleWord(true);
 		JScrollPane scrollPane1 = new JScrollPane(txtAAreaSi);
 			scrollPane1.setBounds(20, 20, 300, 400);
-			scrollPane1.setBorder(BorderFactory.createTitledBorder(""));
+			scrollPane1.setBorder(BorderFactory.createTitledBorder("Resultados Si"));
 		add(scrollPane1);
 		
+		
 		txtAAreaNo=new JTextArea();
-			txtAAreaNo.setFont(new Font("Times New Roman", 5, 16));
+			txtAAreaNo.setFont(new Font("Times New Roman", 0, 16));
 			txtAAreaNo.setBackground(new Color(230, 230, 230));
 			txtAAreaNo.setEditable(false);
 			txtAAreaNo.setLineWrap(true);
 			txtAAreaNo.setWrapStyleWord(true);
 		JScrollPane scrollPane2 = new JScrollPane(txtAAreaNo);
 			scrollPane2.setBounds(350, 20, 300, 400);
-			scrollPane2.setBorder(BorderFactory.createTitledBorder(""));
+			scrollPane2.setBorder(BorderFactory.createTitledBorder("Resultados No"));
 		add(scrollPane2);
 		
+		
 		btnAnalizar=new JButton("Analizar");
-			btnAnalizar.setBounds(260, 450, 150, 40);
+			btnAnalizar.setBounds(170, 520, 150, 40);
 			btnAnalizar.setFont(new Font("Time New Romans", 0, 20));
+			btnAnalizar.addActionListener(this);
 		add(btnAnalizar);
+		
+		
+		btnLimpiar=new JButton("Limpiar");
+			btnLimpiar.setBounds(350, 520, 150, 40);
+			btnLimpiar.setFont(new Font("Time New Romans", 0, 20));
+			btnLimpiar.addActionListener(this);
+		add(btnLimpiar);
 	}
 	
 	public void generarDatosAleatorios(){
@@ -55,6 +70,21 @@ class VentanaPrincipal extends JFrame {
 				datosAleatorios[i]="Si";
 			else
 				datosAleatorios[i]="No";
+		}
+	}
+	
+	public void limpiar(){
+		txtAAreaSi.setText("");
+		txtAAreaNo.setText("");
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource()==btnAnalizar){
+			
+		}
+		if(e.getSource()==btnLimpiar){
+			limpiar();
 		}
 	}
 }
@@ -82,14 +112,6 @@ public class Prueba {
 			public void run() {
 				new VentanaPrincipal();
 			}
-		});
-		
-		VentanaPrincipal ventana=new VentanaPrincipal();
-		
-		ventana.generarDatosAleatorios();
-		
-		for(int i=0;i<ventana.datosAleatorios.length;i++){
-			System.out.println((i+1)+"  "+ventana.datosAleatorios[i]);
-		}
+		});			
 	}
 }
