@@ -6,7 +6,8 @@ import java.lang.reflect.Array;
 
 class GeneraradorAleatorio {
 	
-	String[] datosAleatorios=new String[100];
+	final static int TOTALDATOS=100;
+	String[] datosAleatorios=new String[TOTALDATOS];
 	protected int contSi=0, contNo=0;
 	
 	public String[] generar(){		
@@ -31,6 +32,7 @@ class HiloSepararDatos implements Runnable {
 	final String[] datosAleatorios=generador.generar();
 	final int totalSi=generador.contSi;
 	final int totalNo=generador.contNo;
+	
 	
 	@Override
 	public void run() {
@@ -64,7 +66,7 @@ class VentanaPrincipal extends JFrame implements ActionListener{
 	
 	static JTextArea txtAAreaSi, txtAAreaNo;
 	JButton btnAnalizar, btnLimpiar;
-	JProgressBar barraProgreso;
+	static JProgressBar barraProgresoSi, barraProgresoNo;
 	
 	public VentanaPrincipal() {
 		
@@ -99,6 +101,28 @@ class VentanaPrincipal extends JFrame implements ActionListener{
 			scrollPane2.setBounds(350, 20, 300, 400);
 			scrollPane2.setBorder(BorderFactory.createTitledBorder("Resultados No"));
 		add(scrollPane2);
+		
+		
+		JLabel lblCantidadSi = new JLabel("Cantidad Si:");
+			lblCantidadSi.setFont(new Font("Times New Roman", 0, 26));
+			lblCantidadSi.setBounds(20, 430, 200, 30);
+		add(lblCantidadSi);
+		
+		barraProgresoSi = new JProgressBar(0, GeneraradorAleatorio.TOTALDATOS);
+			barraProgresoSi.setBounds(180, 430, 450, 30);
+			barraProgresoSi.setStringPainted(true);
+		add(barraProgresoSi);
+		
+		JLabel no = new JLabel("Cantidad No:");
+			no.setFont(new Font("Times New Roman", 0, 26));
+			no.setBounds(20, 470, 200, 30);
+		add(no);
+		
+		barraProgresoNo = new JProgressBar(0, GeneraradorAleatorio.TOTALDATOS);
+			barraProgresoNo.setBounds(180, 470, 450, 30);
+			barraProgresoNo.setStringPainted(true);
+		add(barraProgresoNo);
+		
 		
 		
 		btnAnalizar=new JButton("Analizar");
