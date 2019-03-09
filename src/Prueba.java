@@ -2,15 +2,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.lang.reflect.Array;
 
 class GeneraradorAleatorio {
 	
-	final static int TOTALDATOS=100;
+	final static int TOTALDATOS=10000000;
 	String[] datosAleatorios=new String[TOTALDATOS];
-	protected int contSi=0, contNo=0;
+	static int contSi=0, contNo=0;
 	
 	public String[] generar(){		
+		contSi=contNo=0;
+		
 		for(int i=0;i<datosAleatorios.length;i++){
 			if(Math.random()>0.5){
 				datosAleatorios[i]="Si";
@@ -25,17 +26,18 @@ class GeneraradorAleatorio {
 	}
 }
 
+
+
 class HiloSepararDatos implements Runnable {
 	
 	GeneraradorAleatorio generador=new GeneraradorAleatorio();
 	
 	final String[] datosAleatorios=generador.generar();
-	final int totalSi=generador.contSi;
-	final int totalNo=generador.contNo;
-	
-	
+	final int totalSi=GeneraradorAleatorio.contSi;
+	final int totalNo=GeneraradorAleatorio.contNo;
+		
 	@Override
-	public void run() {
+	public synchronized void run() {
 		VentanaPrincipal.txtAAreaSi.setText("");
 		VentanaPrincipal.txtAAreaNo.setText("");
 		int contSi=0, contNo=0;
@@ -59,6 +61,51 @@ class HiloSepararDatos implements Runnable {
 	}
 }
 
+
+
+class HiloActualizarBarraSi implements Runnable {
+	int totalSi=GeneraradorAleatorio.contSi;
+
+	@Override
+	public synchronized void run() {
+		
+		for(int i=0;i<=totalSi;i++) {
+			VentanaPrincipal.barraProgresoSi.setValue(i);
+			VentanaPrincipal.barraProgresoSi.setString(String.valueOf(i));
+			VentanaPrincipal.barraProgresoSi.setFont(new Font("Time New Romans", 0, 20));
+			VentanaPrincipal.barraProgresoSi.setForeground(new Color(0, 190, 80));
+			
+			try {
+				Thread.sleep(1);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+}
+
+
+
+class HiloActualizarBarraNo implements Runnable {
+	int totalNo=GeneraradorAleatorio.contNo;
+	
+	@Override
+	public synchronized void run() {
+		
+		for(int i=0;i<=totalNo;i++) {
+			VentanaPrincipal.barraProgresoNo.setValue(i);
+			VentanaPrincipal.barraProgresoNo.setString(String.valueOf(i));
+			VentanaPrincipal.barraProgresoNo.setFont(new Font("Time New Romans", 0, 20));
+			VentanaPrincipal.barraProgresoNo.setForeground(new Color(200, 40, 40));
+			
+			try {
+				Thread.sleep(1);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+}
 
 
 
@@ -87,7 +134,7 @@ class VentanaPrincipal extends JFrame implements ActionListener{
 			txtAAreaSi.setWrapStyleWord(true);
 		JScrollPane scrollPane1 = new JScrollPane(txtAAreaSi);
 			scrollPane1.setBounds(20, 20, 300, 400);
-			scrollPane1.setBorder(BorderFactory.createTitledBorder("Resultados Si"));
+			scrollPane1.setBorder(BorderFactory.createTitledBorder("Resultados Si:"));
 		add(scrollPane1);
 		
 		
@@ -99,7 +146,7 @@ class VentanaPrincipal extends JFrame implements ActionListener{
 			txtAAreaNo.setWrapStyleWord(true);
 		JScrollPane scrollPane2 = new JScrollPane(txtAAreaNo);
 			scrollPane2.setBounds(350, 20, 300, 400);
-			scrollPane2.setBorder(BorderFactory.createTitledBorder("Resultados No"));
+			scrollPane2.setBorder(BorderFactory.createTitledBorder("Resultados No:"));
 		add(scrollPane2);
 		
 		
@@ -111,6 +158,8 @@ class VentanaPrincipal extends JFrame implements ActionListener{
 		barraProgresoSi = new JProgressBar(0, GeneraradorAleatorio.TOTALDATOS);
 			barraProgresoSi.setBounds(180, 430, 450, 30);
 			barraProgresoSi.setStringPainted(true);
+			barraProgresoSi.setString(String.valueOf(0));
+			barraProgresoSi.setFont(new Font("Time New Romans", 0, 20));
 		add(barraProgresoSi);
 		
 		JLabel no = new JLabel("Cantidad No:");
@@ -121,6 +170,8 @@ class VentanaPrincipal extends JFrame implements ActionListener{
 		barraProgresoNo = new JProgressBar(0, GeneraradorAleatorio.TOTALDATOS);
 			barraProgresoNo.setBounds(180, 470, 450, 30);
 			barraProgresoNo.setStringPainted(true);
+			barraProgresoNo.setString(String.valueOf(0));
+			barraProgresoNo.setFont(new Font("Time New Romans", 0, 20));
 		add(barraProgresoNo);
 		
 		
@@ -139,12 +190,15 @@ class VentanaPrincipal extends JFrame implements ActionListener{
 		add(btnLimpiar);
 	}
 	
-	
-	
 	public void limpiar(){
 		txtAAreaSi.setText("");
 		txtAAreaNo.setText("");
+		barraProgresoSi.setValue(0);
+		barraProgresoSi.setString(String.valueOf(0));
+		barraProgresoNo.setValue(0);
+		barraProgresoNo.setString(String.valueOf(0));
 	}
+	
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -152,6 +206,16 @@ class VentanaPrincipal extends JFrame implements ActionListener{
 			Thread hiloSeparar = new Thread(new HiloSepararDatos());
 			hiloSeparar.start();
 			
+//			try {
+//				hiloSeparar.join();
+//			} catch (InterruptedException e1) {
+//				e1.printStackTrace();
+//			}
+			
+			Thread hiloActualizarBarraSi = new Thread(new HiloActualizarBarraSi());
+			hiloActualizarBarraSi.start();
+			Thread hiloActualizarBarraNo = new Thread(new HiloActualizarBarraNo());
+			hiloActualizarBarraNo.start();
 		}
 		if(e.getSource()==btnLimpiar){
 			limpiar();
@@ -159,12 +223,7 @@ class VentanaPrincipal extends JFrame implements ActionListener{
 	}
 }
 
-class Hilo1 implements Runnable {
-	@Override
-	public void run() {
-		//if(datos[i].eq)
-	}
-}
+
 
 public class Prueba {
 
