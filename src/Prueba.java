@@ -162,6 +162,7 @@ class VentanaPrincipal extends JFrame implements ActionListener{
 			barraProgresoSi.setFont(new Font("Time New Romans", 0, 20));
 		add(barraProgresoSi);
 		
+		
 		JLabel no = new JLabel("Cantidad No:");
 			no.setFont(new Font("Times New Roman", 0, 26));
 			no.setBounds(20, 470, 200, 30);
@@ -217,6 +218,7 @@ class VentanaPrincipal extends JFrame implements ActionListener{
 			Thread hiloActualizarBarraNo = new Thread(new HiloActualizarBarraNo());
 			hiloActualizarBarraNo.start();
 		}
+		
 		if(e.getSource()==btnLimpiar){
 			limpiar();
 		}
